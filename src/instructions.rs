@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 use phf::phf_ordered_map;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum Instr {
     Nop,
 

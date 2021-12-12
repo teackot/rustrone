@@ -1,12 +1,28 @@
 use computer::Computer;
-use assembler::assemble;
+use assembler::Assembler;
+
+use std::env;
 
 mod computer;
 mod instructions;
 mod assembler;
 
-fn main() {
-    let mut comp = Computer::new(100);
+fn print_usage() {
+    println!("Usage:\trustrone [file]");
+    println!("\tfile - file with source code");
+}
+
+fn main() -> Result<(), &'static str> {
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() != 2 {
+        print_usage();
+        return Err("invalid arguments");
+    }
+
+    let fname = args[1].clone();
+
+    let mut comp = Computer::new(256);
     // put a, 5; put c, 2; sub a, c;
     // put b, 3; cmp a, b; je 4;
     // halt
@@ -16,7 +32,10 @@ fn main() {
     //     0b01101000,
     // ]);
     
-    comp.load_program(assemble("program.s"));
+    let a = Assembler::new();
+    comp.load_program(a.assemble(&fname));
 
     while comp.tick() { println!(); }
+
+    return Ok(());
 }
