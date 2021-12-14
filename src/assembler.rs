@@ -1,3 +1,5 @@
+mod full_instruction;
+
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, BufRead};
@@ -121,7 +123,7 @@ impl Assembler {
                     continue; // Skip blank/comment line
                 }
 
-                let instr = Instr::from_str(&word.s.to_lowercase());
+                let instr = Instr::from_str(&word.s.to_lowercase()).unwrap();
                 let mut byte = instr.to_u8() << 3;
 
                 match instr {

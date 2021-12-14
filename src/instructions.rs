@@ -73,16 +73,14 @@ impl Instr {
         }
     }
 
-    pub fn from_str(instr: &str) -> Self {
-        let mut ret = Self::Halt;
+    pub fn from_str(instr: &str) -> Option<Instr> {
         for entry in opcodes.entries() {
             if entry.1.1 == instr {
-                ret = entry.1.0.clone();
-                break;
+                return Some(entry.1.0.clone());
             }
         }
 
-        ret
+        None
     }
 
     pub fn to_u8(&self) -> u8 {
