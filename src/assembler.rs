@@ -190,11 +190,15 @@ impl Assembler {
                         }
                     },
 
-                    Instr::Inc => todo!(),
-                    Instr::Dec => todo!(),
+                    Instr::Inc  |
+                    Instr::Dec  |
+                    Instr::Push |
+                    Instr::Pop  => {
+                        let reg_id = self.get_reg_operand(&mut word, &line, 1);
+                        byte += reg_id;
 
-                    Instr::Push => todo!(),
-                    Instr::Pop => todo!(),
+                        self.assembled.push(byte);
+                    },
                 }
             }
         }

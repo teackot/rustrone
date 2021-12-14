@@ -72,6 +72,17 @@ impl Computer {
         }
     }
 
+    fn execute_reg(&mut self, instr: Instr, start_byte: u8) {
+        let reg = (start_byte & 0b111) as usize;
+
+        match instr {
+            Instr::Inc => self.regs.common[reg] += 1,
+            Instr::Dec => self.regs.common[reg] -= 1,
+
+            _ => panic!(),
+        }
+    }
+
     fn execute_jump(&mut self, instr: Instr, start_byte: u8) {
         // 0 - value
         // 1 - reg
@@ -160,11 +171,10 @@ impl Computer {
             Instr::Jcond(_) |
             Instr::Jncond(_) => self.execute_jump(instr, byte),
 
-            Instr::Inc => todo!(),
-            Instr::Dec => todo!(),
-
-            Instr::Push => todo!(),
-            Instr::Pop => todo!(),
+            Instr::Inc  |
+            Instr::Dec  |
+            Instr::Push |
+            Instr::Pop  => self.execute_reg(instr, byte),
 
             Instr::Halt => continue_work = false,
         }
