@@ -1,16 +1,17 @@
 use std::cmp::Ordering;
 
-use crate::instructions::Instr;
+use crate::instructions::{Instr, INSTRUCTIONS};
 
-struct Regs {
+pub struct Regs {
     pub common: [u8; 4],
     pub flags: Ordering,
 }
 
 pub struct Computer {
-    memory: Vec<u8>,
-    regs: Regs,
+    pub memory: Vec<u8>,
+    pub regs: Regs,
     pub ip: u8,
+    pub should_halt: bool,
 }
 
 impl Computer {
@@ -25,8 +26,9 @@ impl Computer {
 // Instruction execution
 impl Computer {
     fn execute_reg_reg(&mut self, instr: Instr, start_byte: u8) {
-        let reg1 = (start_byte & 0b111) as usize;
-        let reg2 = self.next_byte() as usize;
+        let byte = self.next_byte();
+        let reg1 = ((byte & 0b11110000) >> 4) as usize;
+        let reg2 = (byte & 0b00001111) as usize;
 
         match instr {
             Instr::Add => self.regs.common[reg1] += self.regs.common[reg2],
@@ -112,6 +114,18 @@ impl Computer {
             _ => panic!("Invalid jump instruction")
         }
     }
+
+    fn execute(&mut self, instr: Instr, start_byte: u8) {
+        let mut registers_byte = (0u8, false); // (value, was_set)
+        let mut value_byte = (0u8, false);
+        
+        // Temporary. False - reg rer, true - reg val
+        let operands_type = start_byte & 0b11 != 0;
+        match operands_type {
+            false => {},
+            true => {}
+        }
+    }
 }
 
 // Other
@@ -120,10 +134,11 @@ impl Computer {
         Self {
             memory: vec![0; mem_size],
             regs: Regs {
-                common: [0, 0, 0, 0],
+                common: [1, 1, 1, 1],
                 flags: Ordering::Equal,
             },
             ip: 0,
+            should_halt: false,
         }
     }
 
@@ -141,46 +156,47 @@ impl Computer {
         println!("ip: {}", self.ip);
     }
 
-    fn next_byte(&mut self) -> u8 {
+    pub fn next_byte(&mut self) -> u8 {
         let ret = self.memory[self.ip as usize];
         self.ip += 1;
         ret
     }
 
     pub fn tick(&mut self) -> bool {
-        let mut continue_work = true;
+        // let mut continue_work = true;
 
         let byte = self.next_byte();
-        let instr = Instr::from((byte & 0b11111000) >> 3);
+        let instr = (byte & 0b11111100) >> 2;
+        INSTRUCTIONS.get(&instr).unwrap().execute(self, byte);
 
-        match instr {
-            Instr::Nop => (),
+        // match instr {
+        //     Instr::Nop => (),
 
-            Instr::Add |
-            Instr::Sub |
-            Instr::Mul |
-            Instr::Div |
-            Instr::Ldr |
-            Instr::Str |
-            Instr::Mov |
-            Instr::Cmp => self.execute_reg_reg(instr, byte),
+        //     Instr::Add |
+        //     Instr::Sub |
+        //     Instr::Mul |
+        //     Instr::Div |
+        //     Instr::Ldr |
+        //     Instr::Str |
+        //     Instr::Mov |
+        //     Instr::Cmp => self.execute_reg_reg(instr, byte),
 
-            Instr::Put => self.execute_reg_val(instr, byte),
+        //     Instr::Put => self.execute_reg_val(instr, byte),
 
-            Instr::Jmp |
-            Instr::Jcond(_) |
-            Instr::Jncond(_) => self.execute_jump(instr, byte),
+        //     Instr::Jmp |
+        //     Instr::Jcond(_) |
+        //     Instr::Jncond(_) => self.execute_jump(instr, byte),
 
-            Instr::Inc  |
-            Instr::Dec  |
-            Instr::Push |
-            Instr::Pop  => self.execute_reg(instr, byte),
+        //     Instr::Inc  |
+        //     Instr::Dec  |
+        //     Instr::Push |
+        //     Instr::Pop  => self.execute_reg(instr, byte),
 
-            Instr::Halt => continue_work = false,
-        }
+        //     Instr::Halt => continue_work = false,
+        // }
 
         self.dump();
 
-        continue_work
+        ! self.should_halt
     }
 }

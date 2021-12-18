@@ -1,18 +1,14 @@
 use std::collections::HashMap;
 
-use crate::instructions::{Instr, self};
-
-enum OperandType {
-    Register,
-    Value,
-}
+use crate::instructions::{Instr, self, OperandType};
 
 enum InstructionWord {
     Instruction(Instr),
     Label(String),
+    None,
 }
 
-struct FullInstruction {
+pub struct FullInstruction {
     instruction: InstructionWord,
     operands: Vec<(String, OperandType)>,
     size: usize,
@@ -66,6 +62,14 @@ impl FullInstruction {
     pub fn new(line: &str) -> Self {
         let words = Self::get_words(line);
 
+        if words.len() == 0 { // blank line / comment
+            return Self {
+                instruction: InstructionWord::None,
+                operands: Vec::new(),
+                size: 0,
+            }
+        }
+
         let instruction = match Instr::from_str(&words[0]) {
             Some(instr) => InstructionWord::Instruction(instr),
             None => InstructionWord::Label(words[0].clone()),
@@ -93,8 +97,11 @@ impl FullInstruction {
         } else if operands.len() == 2 {
             match operands.last().unwrap().1 {
                 OperandType::Register => 2, // 1 byte + 2 regs in 1 byte
-                OperandType::Value => 3 // 1 byte + 1 reg + u8 value
+                OperandType::Value => 3, // 1 byte + 1 reg + u8 value
+                OperandType::Depends => panic!("Error, operand types must be definite"),
             }
+        } else if operands.len() == 0 {
+            0
         } else {
             panic!("There is no instruction with this number of operands");
         };
@@ -119,7 +126,115 @@ impl FullInstruction {
     pub fn as_label(&self) -> Option<String> {
         match &self.instruction {
             InstructionWord::Label(lbl) => Some(lbl.clone()),
-            InstructionWord::Instruction(_) => None,
+            _ => None,
         }
+    }
+
+    pub fn build(&self, labels: &HashMap<String, usize>) -> Vec<u8> {
+        let mut ret = Vec::<u8>::new();
+
+        if let InstructionWord::Instruction(instr) = & self.instruction {
+            ret.reserve_exact(self.size);
+            let mut byte: u8 = instr.to_u8() << 2;
+
+            match instr {
+                Instr::Nop |
+                Instr::Halt => {
+                    ret.push(byte);
+                },
+
+                Instr::Add |
+                Instr::Sub |
+                Instr::Mul |
+                Instr::Div |
+                Instr::Ldr |
+                Instr::Str |
+                Instr::Mov |
+                Instr::Cmp => {
+                    ret.push(byte);
+
+                    let mut registers_byte = 0u8;
+                    let mut value_byte = 0u8;
+                    for op in (&self.operands).into_iter().enumerate() {
+                        let (i, (op, op_type)) = op;
+                        match op_type {
+                            OperandType::Register => {
+                                let reg_id: u8 = op[1..].parse().expect("Invalid register id");
+                                if ! (0..=7).contains(& reg_id) {
+                                    panic!("Register id is out of range");
+                                }
+
+                                registers_byte += reg_id << (4 - 4 * i);
+                            }
+                            OperandType::Value => {
+                                let value: u8 = op[1..].parse().expect("Invalid value");
+                                value_byte = value;
+                            }
+                            OperandType::Depends => panic!("Error, operand types must be definite"),                            
+                        }
+                    }
+
+                    ret.push(registers_byte);
+                    ret.push(value_byte);
+                },
+
+                _ => { todo!() }
+
+                // Instr::Put => {
+                //     let reg_id = self.get_reg_operand(&mut word, &line, 1);
+                //     byte += reg_id;
+
+                //     self.assembled.push(byte);
+                //     byte = 0;
+
+                //     // TODO: remove duplicated code
+                //     // Get the value (second operand)
+                //     word = self.get_word(& line, 3);
+                //     self.assembled.push(
+                //         word.s
+                //             .parse::<u8>()
+                //             .expect("Second operand should be an 8 bit unsigned integer!")
+                //     );
+                // },
+
+                // Instr::Jmp |
+                // Instr::Jcond(_) |
+                // Instr::Jncond(_) => {
+                //     let is_reg = self.get_word(& line, 2).s.starts_with('r');
+                //     if is_reg { // Jump by register
+                //         byte += 0b001;
+                //         self.assembled.push(byte);
+
+                //         let reg_id = self.get_reg_operand(&mut word, &line, 1);
+                //         self.assembled.push(reg_id);
+                //         byte = 0;
+                //     } else {// Jump by value    
+                //         byte += 0b000;
+                //         self.assembled.push(byte);
+
+                //         // TODO: remove duplicated code
+                //         // Get the value (second operand)
+                //         word = self.get_word(& line, 3);
+                //         self.assembled.push(
+                //             word.s
+                //                 .parse::<u8>()
+                //                 .expect("Second operand should be an 8 bit unsigned integer!")
+                //         );
+                //     }
+                // },
+
+                // Instr::Inc  |
+                // Instr::Dec  |
+                // Instr::Push |
+                // Instr::Pop  => {
+                //     let reg_id = self.get_reg_operand(&mut word, &line, 1);
+                //     byte += reg_id;
+
+                //     self.assembled.push(byte);
+                // },
+            }
+        }
+
+        ret
     }
 }

@@ -25,8 +25,15 @@ fn main() -> Result<(), &'static str> {
     let mut comp = Computer::new(256);
     
     let a = Assembler::new();
-    comp.load_program(a.assemble(&fname));
+    let prg = a.assemble(&fname);
+    let prg: Vec<u8> = vec![
+        9 << 2, 2 << 4, 3,
+        1 << 2, 1,
+        15 << 2, 2 << 4,
+    ];
+    comp.load_program(prg);
 
+    // comp.tick();comp.tick();comp.tick();comp.tick();comp.tick();comp.tick();comp.tick();
     while comp.tick() { println!(); }
 
     return Ok(());
