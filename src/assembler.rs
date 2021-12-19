@@ -32,9 +32,6 @@ impl Assembler {
             Ok(file) => file,
         };
 
-        // reserve enough memory
-        // self.instrs.reserve(io::BufReader::new(&file).lines().count() * 3);
-
         let lines = io::BufReader::new(file).lines();
         let mut current_byte: usize = 0;
         for line in lines {
