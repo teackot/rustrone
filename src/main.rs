@@ -26,11 +26,11 @@ fn main() -> Result<(), &'static str> {
     
     let a = Assembler::new();
     let prg = a.assemble(&fname);
-    let prg: Vec<u8> = vec![
-        9 << 2, 2 << 4, 3,
-        1 << 2, 1,
-        15 << 2, 2 << 4,
-    ];
+    // let prg: Vec<u8> = vec![
+    //     9 << 2, 2 << 4, 3,
+    //     1 << 2, 1,
+    //     15 << 2, 2 << 4,
+    // ];
     comp.load_program(prg);
 
     // comp.tick();comp.tick();comp.tick();comp.tick();comp.tick();comp.tick();comp.tick();
