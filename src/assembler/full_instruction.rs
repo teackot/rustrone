@@ -20,7 +20,7 @@ impl FullInstruction {
     fn get_words(line: &str) -> Vec<String> {
         let mut word_started = false; // to skip indentations
         let mut start_idx = 0_usize;
-        let mut end_idx = 1_usize;
+        let mut end_idx: usize;
 
         let mut words: Vec<String> = Vec::new();
         words.reserve(3);
@@ -87,7 +87,7 @@ impl FullInstruction {
 
         // Calculate total size in bytes
 
-        let size: usize = if let InstructionWord::Instruction(instr) = instruction {
+        let size: usize = if let InstructionWord::Instruction(_instr) = instruction {
             get_instruction_size(& operand_types) as usize
         } else {
             0usize

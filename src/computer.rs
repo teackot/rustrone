@@ -14,15 +14,6 @@ pub struct Computer {
     pub should_halt: bool,
 }
 
-impl Computer {
-    fn get_reg_reg_ops(&mut self, start_byte: u8) -> (usize, usize) {
-        let reg1_id = (start_byte & 0b111) as usize;
-        let reg2_id = self.next_byte() as usize;
-
-        (reg1_id, reg2_id)
-    }
-}
-
 // Other
 impl Computer {
     pub fn new(mem_size: usize) -> Self {
