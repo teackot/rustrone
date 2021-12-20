@@ -52,7 +52,7 @@ impl Assembler {
         }
         
         self.assembled.reserve(current_byte);
-        for instr in self.instrs {
+        for mut instr in self.instrs {
             self.assembled.append(&mut instr.build(& self.labels));
         }
 

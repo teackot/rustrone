@@ -102,8 +102,14 @@ impl FullInstruction {
         }
     }
 
-    pub fn build(&self, labels: &HashMap<String, usize>) -> Vec<u8> {
+    pub fn build(&mut self, labels: &HashMap<String, usize>) -> Vec<u8> {
         // TODO: compile labels
+        for op in &mut self.operands {
+            if op.starts_with('@') { // It is a label
+                *op = labels.get(op).expect("There is no such label!").to_string();
+            }
+        }
+
         let mut ret = Vec::<u8>::new();
 
         if let InstructionWord::Instruction(instr) = & self.instruction {
