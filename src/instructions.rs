@@ -27,25 +27,25 @@ pub trait Executable {
 //------------------
 // Nop, Halt
 
-static nop_opcode: u8 = 0;
+const NOP_OPCODE: u8 = 0;
 struct Nop;
 impl Executable for Nop {
     fn execute(&self, _computer: &mut Computer, _first_byte: u8) {}
     fn mnemonic(&self) -> String { String::from("nop") }
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
-        vec![nop_opcode << 2]
+        vec![NOP_OPCODE << 2]
     }
     
 }
 
-static halt_opcode: u8 = 1;
+const HALT_OPCODE: u8 = 1;
 struct Halt;
 impl Executable for Halt {
     fn execute(&self, computer: &mut Computer, _first_byte: u8) { computer.should_halt = true }
     fn mnemonic(&self) -> String { String::from("halt") }
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
-        vec![halt_opcode << 2]
+        vec![HALT_OPCODE << 2]
     }
     
 }
@@ -61,7 +61,7 @@ fn assemble_basic_math(opcode: u8, operands: & Vec<String>, operand_types: &Vec<
     ]
 }
 
-static add_opcode: u8 = 2;
+const ADD_OPCODE: u8 = 2;
 struct Add;
 impl Executable for Add {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -72,11 +72,11 @@ impl Executable for Add {
     fn mnemonic(&self) -> String { String::from("add") }
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
-        assemble_basic_math(add_opcode, operands, operand_types)
+        assemble_basic_math(ADD_OPCODE, operands, operand_types)
     }
 }
 
-static sub_opcode: u8 = 3;
+const SUB_OPCODE: u8 = 3;
 struct Sub;
 impl Executable for Sub {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -87,11 +87,11 @@ impl Executable for Sub {
     fn mnemonic(&self) -> String { String::from("sub") }
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
-        assemble_basic_math(sub_opcode, operands, operand_types)
+        assemble_basic_math(SUB_OPCODE, operands, operand_types)
     }
 }
 
-static mul_opcode: u8 = 4;
+const MUL_OPCODE: u8 = 4;
 struct Mul;
 impl Executable for Mul {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -102,11 +102,11 @@ impl Executable for Mul {
     fn mnemonic(&self) -> String { String::from("mul") }
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
-        assemble_basic_math(mul_opcode, operands, operand_types)
+        assemble_basic_math(MUL_OPCODE, operands, operand_types)
     }
 }
 
-static div_opcode: u8 = 5;
+const DIV_OPCODE: u8 = 5;
 struct Div;
 impl Executable for Div {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -125,7 +125,7 @@ impl Executable for Div {
     fn mnemonic(&self) -> String { String::from("div") }
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
-        assemble_basic_math(div_opcode, operands, operand_types)
+        assemble_basic_math(DIV_OPCODE, operands, operand_types)
     }
 }
 
@@ -139,7 +139,7 @@ fn assemble_inc_dec(opcode: u8, operands: & Vec<String>, operand_types: &Vec<Ope
     ]
 }
 
-static inc_opcode: u8 = 6;
+const INC_OPCODE: u8 = 6;
 struct Inc;
 impl Executable for Inc {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -150,11 +150,11 @@ impl Executable for Inc {
     fn mnemonic(&self) -> String { String::from("inc") }
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
-        assemble_inc_dec(inc_opcode, operands, operand_types)
+        assemble_inc_dec(INC_OPCODE, operands, operand_types)
     }
 }
 
-static dec_opcode: u8 = 7;
+const DEC_OPCODE: u8 = 7;
 struct Dec;
 impl Executable for Dec {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -165,7 +165,7 @@ impl Executable for Dec {
     fn mnemonic(&self) -> String { String::from("dec") }
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
-        assemble_inc_dec(dec_opcode, operands, operand_types)
+        assemble_inc_dec(DEC_OPCODE, operands, operand_types)
     }
 }
 
@@ -180,7 +180,7 @@ fn assemble_ldr_str(opcode: u8, operands: & Vec<String>, operand_types: &Vec<Ope
     ]
 }
 
-static ldr_opcode: u8 = 8;
+const LDR_OPCODE: u8 = 8;
 struct Ldr;
 impl Executable for Ldr {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -191,11 +191,11 @@ impl Executable for Ldr {
     fn mnemonic(&self) -> String { String::from("ldr") }
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
-        assemble_ldr_str(ldr_opcode, operands, operand_types)
+        assemble_ldr_str(LDR_OPCODE, operands, operand_types)
     }
 }
 
-static str_opcode: u8 = 9;
+const STR_OPCODE: u8 = 9;
 struct Str;
 impl Executable for Str {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -206,11 +206,11 @@ impl Executable for Str {
     fn mnemonic(&self) -> String { String::from("str") }
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
-        assemble_ldr_str(str_opcode, operands, operand_types)
+        assemble_ldr_str(STR_OPCODE, operands, operand_types)
     }
 }
 
-static mov_opcode: u8 = 10;
+const MOV_OPCODE: u8 = 10;
 struct Mov;
 impl Executable for Mov {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -222,14 +222,14 @@ impl Executable for Mov {
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
         vec![
-            mov_opcode << 2,
+            MOV_OPCODE << 2,
             (operands[0][1..].parse::<u8>().expect("Invalid register id") << 4) +
             operands[1][1..].parse::<u8>().expect("Invalid register id"),
         ]
     }
 }
 
-static put_opcode: u8 = 11;
+const PUT_OPCODE: u8 = 11;
 struct Put;
 impl Executable for Put {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -241,7 +241,7 @@ impl Executable for Put {
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
         vec![
-            put_opcode << 2,
+            PUT_OPCODE << 2,
             operands[0][1..].parse::<u8>().expect("Invalid register id") << 4,
             operands[1].parse::<u8>().expect("Invalid value"),
         ]
@@ -251,7 +251,7 @@ impl Executable for Put {
 //----------------
 // Branching
 
-static cmp_opcode: u8 = 12;
+const CMP_OPCODE: u8 = 12;
 struct Cmp;
 impl Executable for Cmp {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -263,14 +263,14 @@ impl Executable for Cmp {
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
         vec![
-            cmp_opcode << 2,
+            CMP_OPCODE << 2,
             (operands[0][1..].parse::<u8>().expect("Invalid register id") << 4) +
             operands[1][1..].parse::<u8>().expect("Invalid register id"),
         ]
     }
 }
 
-static jmp_opcode: u8 = 13;
+const JMP_OPCODE: u8 = 13;
 struct Jmp;
 impl Executable for Jmp {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
@@ -282,18 +282,18 @@ impl Executable for Jmp {
 
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
         vec![
-            jmp_opcode << 2,
+            JMP_OPCODE << 2,
             operands[0][1..].parse::<u8>().expect("Invalid register id") << 4,
         ]
     }
 }
 
-static jl_opcode: u8 = 14;
-static jge_opcode: u8 = 16;
-static jg_opcode: u8 = 17;
-static jle_opcode: u8 = 18;
-static je_opcode: u8 = 19;
-static jne_opcode: u8 = 20;
+const JL_OPCODE: u8 = 14;
+const JGE_OPCODE: u8 = 16;
+const JG_OPCODE: u8 = 17;
+const JLE_OPCODE: u8 = 18;
+const JE_OPCODE: u8 = 19;
+const JNE_OPCODE: u8 = 20;
 // true - cond, false - ncond
 struct Jcond(bool, Ordering);
 impl Executable for Jcond {
@@ -324,15 +324,15 @@ impl Executable for Jcond {
     fn assemble(&self, operands: & Vec<String>, operand_types: &Vec<OperandType>) -> Vec<u8> {
         let opcode = if self.0 {
             match self.1 {
-                Ordering::Less    => jl_opcode,
-                Ordering::Equal   => je_opcode,
-                Ordering::Greater => jg_opcode,
+                Ordering::Less    => JL_OPCODE,
+                Ordering::Equal   => JE_OPCODE,
+                Ordering::Greater => JG_OPCODE,
             }
         } else {
             match self.1 {
-                Ordering::Less    => jge_opcode,
-                Ordering::Equal   => jne_opcode,
-                Ordering::Greater => jle_opcode,
+                Ordering::Less    => JGE_OPCODE,
+                Ordering::Equal   => JNE_OPCODE,
+                Ordering::Greater => JLE_OPCODE,
             }
         };
 
@@ -355,30 +355,30 @@ lazy_static! {
     pub static ref INSTRUCTIONS: HashMap <u8, Box<dyn Executable + Sync>> = {
         let mut instrs = HashMap::<u8, Box<dyn Executable + Sync>>::new();
 
-        instrs.insert(nop_opcode, Box::from(Nop));
-        instrs.insert(halt_opcode, Box::from(Halt));
+        instrs.insert(NOP_OPCODE, Box::from(Nop));
+        instrs.insert(HALT_OPCODE, Box::from(Halt));
 
-        instrs.insert(add_opcode, Box::from(Add));
-        instrs.insert(sub_opcode, Box::from(Sub));
-        instrs.insert(mul_opcode, Box::from(Mul));
-        instrs.insert(div_opcode, Box::from(Div));
+        instrs.insert(ADD_OPCODE, Box::from(Add));
+        instrs.insert(SUB_OPCODE, Box::from(Sub));
+        instrs.insert(MUL_OPCODE, Box::from(Mul));
+        instrs.insert(DIV_OPCODE, Box::from(Div));
 
-        instrs.insert(inc_opcode, Box::from(Inc));
-        instrs.insert(dec_opcode, Box::from(Dec));
+        instrs.insert(INC_OPCODE, Box::from(Inc));
+        instrs.insert(DEC_OPCODE, Box::from(Dec));
 
-        instrs.insert(ldr_opcode, Box::from(Ldr));
-        instrs.insert(str_opcode, Box::from(Str));
-        instrs.insert(put_opcode, Box::from(Put));
-        instrs.insert(mov_opcode, Box::from(Mov));
+        instrs.insert(LDR_OPCODE, Box::from(Ldr));
+        instrs.insert(STR_OPCODE, Box::from(Str));
+        instrs.insert(PUT_OPCODE, Box::from(Put));
+        instrs.insert(MOV_OPCODE, Box::from(Mov));
 
-        instrs.insert(cmp_opcode, Box::from(Cmp));
-        instrs.insert(jmp_opcode, Box::from(Jmp));
-        instrs.insert(jl_opcode, Box::from(Jcond(true,  Ordering::Less)));     // jl
-        instrs.insert(jge_opcode, Box::from(Jcond(false, Ordering::Less)));    // jge
-        instrs.insert(jg_opcode, Box::from(Jcond(true,  Ordering::Greater)));  // jg
-        instrs.insert(jle_opcode, Box::from(Jcond(false, Ordering::Greater))); // jle
-        instrs.insert(je_opcode, Box::from(Jcond(true,  Ordering::Equal)));    // je
-        instrs.insert(jne_opcode, Box::from(Jcond(false, Ordering::Equal)));   // jne
+        instrs.insert(CMP_OPCODE, Box::from(Cmp));
+        instrs.insert(JMP_OPCODE, Box::from(Jmp));
+        instrs.insert(JL_OPCODE, Box::from(Jcond(true,  Ordering::Less)));     // jl
+        instrs.insert(JGE_OPCODE, Box::from(Jcond(false, Ordering::Less)));    // jge
+        instrs.insert(JG_OPCODE, Box::from(Jcond(true,  Ordering::Greater)));  // jg
+        instrs.insert(JLE_OPCODE, Box::from(Jcond(false, Ordering::Greater))); // jle
+        instrs.insert(JE_OPCODE, Box::from(Jcond(true,  Ordering::Equal)));    // je
+        instrs.insert(JNE_OPCODE, Box::from(Jcond(false, Ordering::Equal)));   // jne
 
         instrs
     };
