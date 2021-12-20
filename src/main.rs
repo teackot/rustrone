@@ -28,6 +28,8 @@ fn main() -> Result<(), &'static str> {
     let prg = a.assemble(&fname);
     comp.load_program(prg);
 
+    comp.dump_memory(0..20);
+    println!();
     while comp.tick() { println!(); }
 
     return Ok(());

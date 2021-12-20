@@ -345,7 +345,7 @@ impl Executable for Jcond {
 
 //----------------
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub enum OperandType {
     Register,
     Value,
@@ -387,17 +387,33 @@ lazy_static! {
         let mut sizes: Vec <(Vec<OperandType>, u8)> = Vec::new();
 
         sizes.push((vec![OperandType::Register, OperandType::Register], 2));
+        sizes.push((vec![OperandType::Register, OperandType::Value], 3));
+        sizes.push((vec![OperandType::Register], 2));
+        sizes.push((vec![OperandType::Value], 2));
+        sizes.push((Vec::new(), 1));
 
         sizes
     };
 }
 
 pub fn get_instruction_size(operand_types: &Vec<OperandType>) -> u8 {
+    let mut equality: bool;
+
     for entry in (& INSTRUCTION_SIZE).iter() {
-        for op in operand_types.iter().enumerate() {
-            if * op.1 == entry.0[op.0] {
-                return entry.1;
+        equality = true;
+        if operand_types.len() == entry.0.len() {
+            for op in operand_types.iter().enumerate() {
+                if * op.1 != entry.0[op.0] {
+                    equality = false;
+                    break;
+                }
             }
+        } else {
+            equality = false;
+        }
+
+        if equality {
+            return entry.1;
         }
     }
 

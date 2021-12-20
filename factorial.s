@@ -5,6 +5,8 @@ put r0 5; hardcoded input value
 
 put r1 1; result
 
+put r2 @repeat; loop
+
 put r3 1; to compare with decreasing r0
 
 @repeat;

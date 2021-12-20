@@ -1,4 +1,4 @@
-use std::cmp::Ordering;
+use std::{cmp::Ordering, usize, ops::Range};
 
 use crate::instructions::{INSTRUCTIONS};
 
@@ -49,10 +49,13 @@ impl Computer {
         }
 
         println!("ip: {}\n", self.ip);
+    }
 
-        // for i in 0..10 {
-        //     println!("{}: {}", i,  self.memory[i])
-        // }
+    pub fn dump_memory(&self, r: Range<usize>) {
+        for i in r {
+            print!("{} | ", self.memory[i]);
+        }
+        println!();
     }
 
     pub fn next_byte(&mut self) -> u8 {

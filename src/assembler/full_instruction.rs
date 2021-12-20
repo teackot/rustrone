@@ -2,14 +2,15 @@ use std::collections::HashMap;
 
 use crate::instructions::{OperandType, instr_from_str, Executable, get_instruction_size};
 
-enum InstructionWord {
+pub enum InstructionWord {
     Instruction(&'static Box<dyn Executable + Sync + 'static>),
     Label(String),
+    Data(u8),
     None,
 }
 
 pub struct FullInstruction {
-    instruction: InstructionWord,
+    pub instruction: InstructionWord,
     operands: Vec<String>,
     operand_types: Vec<OperandType>,
     size: usize,
@@ -59,7 +60,13 @@ impl FullInstruction {
 
         let instruction = match instr_from_str(&words[0]) {
             Some(instr) => InstructionWord::Instruction(instr),
-            None => InstructionWord::Label(words[0].clone()),
+            None => if words[0].starts_with('@') { // a label
+                InstructionWord::Label(words[0].clone())
+            } else if words[0].starts_with('#') { // raw data
+                InstructionWord::Data(words[0][1..].parse().expect("Raw data should be a u8 value!"))
+            } else {
+                InstructionWord::None
+            },
         };
 
         let operands = if words.len() > 1 {
@@ -79,6 +86,7 @@ impl FullInstruction {
         }
 
         // Calculate total size in bytes
+
         let size: usize = if let InstructionWord::Instruction(instr) = instruction {
             get_instruction_size(& operand_types) as usize
         } else {
@@ -103,6 +111,10 @@ impl FullInstruction {
     }
 
     pub fn build(&mut self, labels: &HashMap<String, usize>) -> Vec<u8> {
+        if let InstructionWord::Data(data) = self.instruction {
+            return vec![data]
+        }
+
         // TODO: compile labels
         for op in &mut self.operands {
             if op.starts_with('@') { // It is a label

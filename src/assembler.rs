@@ -5,6 +5,8 @@ use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 
+use crate::instructions::{Executable, self};
+
 use self::full_instruction::FullInstruction;
 
 pub struct Assembler {
@@ -50,7 +52,7 @@ impl Assembler {
                 self.instrs.push(instr);
             }
         }
-        
+
         self.assembled.reserve(current_byte);
         for mut instr in self.instrs {
             self.assembled.append(&mut instr.build(& self.labels));
