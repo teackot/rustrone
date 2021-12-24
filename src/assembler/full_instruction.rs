@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::instructions::{OperandType, instr_from_str, Executable, get_instruction_size};
+use crate::instructions::{operands::OperandType, instr_from_str, Executable, get_instruction_size};
 
 pub enum InstructionWord {
     Instruction(&'static Box<dyn Executable + Sync + 'static>),
