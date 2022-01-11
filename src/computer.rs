@@ -2,15 +2,13 @@ use std::{cmp::Ordering, usize, ops::Range};
 
 use crate::instructions::{INSTRUCTIONS};
 
-pub struct Regs {
-    pub common: [u8; 4],
-    pub flags: Ordering,
-}
-
 pub struct Computer {
     pub memory: Vec<u8>,
-    pub regs: Regs,
-    pub ip: u8,
+    
+    pub common_registers: [u16; 4],
+    pub flags: Ordering,
+
+    pub ip: u16,
     pub should_halt: bool,
 }
 
@@ -19,10 +17,10 @@ impl Computer {
     pub fn new(mem_size: usize) -> Self {
         Self {
             memory: vec![0; mem_size],
-            regs: Regs {
-                common: [0, 0, 0, 0],
-                flags: Ordering::Equal,
-            },
+
+            common_registers: [0, 0, 0, 0],
+            flags: Ordering::Equal,
+
             ip: 0,
             should_halt: false,
         }
@@ -35,7 +33,7 @@ impl Computer {
     }
 
     pub fn dump(&self) {
-        for reg in self.regs.common.iter().enumerate() {
+        for reg in self.common_registers.iter().enumerate() {
             println!("r{}: {}", reg.0, reg.1);
         }
 

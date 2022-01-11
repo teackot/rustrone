@@ -25,7 +25,7 @@ fn assemble_inc_dec(opcode: u8, operands: & Vec<String>, operand_types: &Vec<Ope
 impl Executable for Inc {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let reg = get_next_reg_operand(computer);
-        computer.regs.common[reg] += 1;
+        computer.common_registers[reg] += 1;
     }
 
     fn mnemonic(&self) -> String { String::from("inc") }
@@ -38,7 +38,7 @@ impl Executable for Inc {
 impl Executable for Dec {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let reg = get_next_reg_operand(computer);
-        computer.regs.common[reg] -= 1;
+        computer.common_registers[reg] -= 1;
     }
 
     fn mnemonic(&self) -> String { String::from("dec") }

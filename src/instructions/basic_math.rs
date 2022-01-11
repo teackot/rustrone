@@ -30,7 +30,7 @@ fn assemble_basic_math(opcode: u8, operands: & Vec<String>, operand_types: &Vec<
 impl Executable for Add {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let (reg1, reg2) = get_next_reg_reg_operands(computer);
-        computer.regs.common[reg1] += computer.regs.common[reg2];
+        computer.common_registers[reg1] += computer.common_registers[reg2];
     }
 
     fn mnemonic(&self) -> String { String::from("add") }
@@ -43,7 +43,7 @@ impl Executable for Add {
 impl Executable for Sub {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let (reg1, reg2) = get_next_reg_reg_operands(computer);
-        computer.regs.common[reg1] -= computer.regs.common[reg2];
+        computer.common_registers[reg1] -= computer.common_registers[reg2];
     }
 
     fn mnemonic(&self) -> String { String::from("sub") }
@@ -56,7 +56,7 @@ impl Executable for Sub {
 impl Executable for Mul {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let (reg1, reg2) = get_next_reg_reg_operands(computer);
-        computer.regs.common[reg1] *= computer.regs.common[reg2];
+        computer.common_registers[reg1] *= computer.common_registers[reg2];
     }
 
     fn mnemonic(&self) -> String { String::from("mul") }
@@ -70,14 +70,14 @@ impl Executable for Div {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let (reg1, reg2) = get_next_reg_reg_operands(computer);
         
-        let value1 = computer.regs.common[reg1];
-        let value2 = computer.regs.common[reg2];
+        let value1 = computer.common_registers[reg1];
+        let value2 = computer.common_registers[reg2];
 
         let div = value1 / value2;
         let rem = value1 % value2;
 
-        computer.regs.common[0] = div;
-        computer.regs.common[1] = rem;
+        computer.common_registers[0] = div;
+        computer.common_registers[1] = rem;
     }
 
     fn mnemonic(&self) -> String { String::from("div") }

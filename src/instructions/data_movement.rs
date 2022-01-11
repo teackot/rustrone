@@ -30,7 +30,7 @@ fn assemble_ldr_str(opcode: u8, operands: & Vec<String>, operand_types: &Vec<Ope
 impl Executable for Ldr {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let (reg1, reg2) = get_next_reg_reg_operands(computer);
-        computer.regs.common[reg1] = computer.memory[computer.regs.common[reg2] as usize];
+        computer.common_registers[reg1] = computer.memory[computer.common_registers[reg2] as usize] as u16;
     }
 
     fn mnemonic(&self) -> String { String::from("ldr") }
@@ -43,7 +43,7 @@ impl Executable for Ldr {
 impl Executable for Str {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let (reg1, reg2) = get_next_reg_reg_operands(computer);
-        computer.memory[computer.regs.common[reg2] as usize] = computer.regs.common[reg1];
+        computer.memory[computer.common_registers[reg2] as usize] = computer.common_registers[reg1] as u8;
     }
 
     fn mnemonic(&self) -> String { String::from("str") }
@@ -56,7 +56,7 @@ impl Executable for Str {
 impl Executable for Mov {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let (reg1, reg2) = get_next_reg_reg_operands(computer);
-        computer.regs.common[reg1] = computer.regs.common[reg2];
+        computer.common_registers[reg1] = computer.common_registers[reg2];
     }
 
     fn mnemonic(&self) -> String { String::from("mov") }
@@ -73,7 +73,7 @@ impl Executable for Mov {
 impl Executable for Put {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let reg = get_next_reg_operand(computer);
-        computer.regs.common[reg] = computer.next_byte();
+        computer.common_registers[reg] = computer.next_byte() as u16;
     }
 
     fn mnemonic(&self) -> String { String::from("put") }

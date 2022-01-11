@@ -31,7 +31,7 @@ use structs::*;
 impl Executable for Cmp {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let (reg1, reg2) = get_next_reg_reg_operands(computer);
-        computer.regs.flags = computer.regs.common[reg1].cmp(&computer.regs.common[reg2]);
+        computer.flags = computer.common_registers[reg1].cmp(&computer.common_registers[reg2]);
     }
 
     fn mnemonic(&self) -> String { String::from("cmp") }
@@ -48,7 +48,7 @@ impl Executable for Cmp {
 impl Executable for Jmp {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let reg = get_next_reg_operand(computer);
-        computer.ip = computer.regs.common[reg];
+        computer.ip = computer.common_registers[reg];
     }
 
     fn mnemonic(&self) -> String { String::from("jmp") }
@@ -64,8 +64,8 @@ impl Executable for Jmp {
 impl Executable for Jcond {
     fn execute(&self, computer: &mut Computer, first_byte: u8) {
         let reg = get_next_reg_operand(computer);
-        if (computer.regs.flags == self.1) == self.0 {
-            computer.ip = computer.regs.common[reg];
+        if (computer.flags == self.1) == self.0 {
+            computer.ip = computer.common_registers[reg];
         }
     }
 
