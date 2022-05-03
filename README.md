@@ -24,5 +24,5 @@ cargo run FILENAME
 
 Copyright (C) 2022 Nikita Kravets
 
-This App is distributed under the terms of The GNU General Public License v3.0.
+This Software is distributed under the MIT License.
 
