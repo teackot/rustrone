@@ -4,15 +4,21 @@ A simple RISC CPU emulator
 
 Clone the repo:
 
-```git clone https://github.com/teackot/rustrone```
+```
+git clone https://github.com/teackot/rustrone
+```
 
 Build:
 
-```cargo build```
+```
+cargo build
+```
 
 And/or run:
 
-```cargo run FILENAME```
+```
+cargo run FILENAME
+```
 
 # License
 
