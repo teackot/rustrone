@@ -32,5 +32,5 @@ fn main() -> Result<(), &'static str> {
     println!();
     while comp.tick() { println!(); }
 
-    return Ok(());
+    Ok(())
 }

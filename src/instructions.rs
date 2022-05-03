@@ -17,11 +17,58 @@ pub mod branching;
 pub use branching::{opcodes::*, structs::*};
 
 
-use std::{cmp::Ordering, collections::{HashMap}, vec};
+use std::{cmp::Ordering, collections::HashMap, vec};
 use lazy_static::lazy_static;
 
 use crate::computer::Computer;
 
+mod wrap {
+    pub(self) trait RegisterWrapper {
+        fn get(&self, registers: &Vec<u16>) -> u16;
+        fn set(&mut self, value: u16, registers: &mut Vec<u16>);
+    }
+    
+    pub(self) struct RegisterL8Wrapper {
+        pub id: usize,
+    }
+    impl RegisterWrapper for RegisterL8Wrapper {
+        fn get(&self, registers: &Vec<u16>) -> u16 {
+            registers[self.id] & 0x00FF
+        }
+    
+        fn set(&mut self, mut value: u16, registers: &mut Vec<u16>) {
+            value |= 0xFF00;
+            registers[self.id] &= value;
+        }
+    }
+    
+    pub(self) struct RegisterH8Wrapper {
+        pub id: usize,
+    }
+    impl RegisterWrapper for RegisterH8Wrapper {
+        fn get(&self, registers: &Vec<u16>) -> u16 {
+            registers[self.id] & 0xFF00
+        }
+    
+        fn set(&mut self, mut value: u16, registers: &mut Vec<u16>) {
+            value |= 0x00FF;
+            registers[self.id] &= value;
+        }
+    }
+    
+    pub(self) struct Register16Wrapper {
+        pub id: usize,
+    }
+    impl RegisterWrapper for Register16Wrapper {
+        fn get(&self, registers: &Vec<u16>) -> u16 {
+            registers[self.id]
+        }
+    
+        fn set(&mut self, value: u16, registers: &mut Vec<u16>) {
+            registers[self.id] = value;
+        }
+    }
+}
 
 pub trait Executable {
     fn execute(&self, computer: &mut Computer, first_byte: u8);

@@ -5,7 +5,7 @@ use crate::instructions::{INSTRUCTIONS};
 pub struct Computer {
     pub memory: Vec<u8>,
     
-    pub common_registers: [u16; 4],
+    pub common_registers: Vec<u16>,
     pub flags: Ordering,
 
     pub ip: u16,
@@ -18,7 +18,7 @@ impl Computer {
         Self {
             memory: vec![0; mem_size],
 
-            common_registers: [0, 0, 0, 0],
+            common_registers: vec![0, 0, 0, 0],
             flags: Ordering::Equal,
 
             ip: 0,
